@@ -8,23 +8,26 @@ class AnswerButton extends StatelessWidget {
   });
 
   final String answerText;
-  final void Function(String) onTap;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
-        onTap(
-          answerText,
-        ); // Call the callback function with the answer text when pressed
-      },
+      // this code is used to pass data from child to parent widget
+      // onPressed: () {
+      //   onTap(
+      //     answerText,
+      //   ); // Call the callback function with the answer text when pressed
+      onPressed:
+          onTap, // Call the callback function with the answer text when pressed
+
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         backgroundColor: const Color.fromARGB(255, 33, 1, 95),
         foregroundColor: const Color.fromARGB(150, 255, 255, 255),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       ),
-      child: Text(answerText),
+      child: Text(answerText, textAlign: TextAlign.center),
     );
   }
 }

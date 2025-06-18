@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/answer_button.dart';
-import 'package:quiz_app/answer_comparision_screen.dart';
+
 import 'package:quiz_app/data/questions.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class QuestionScreen extends StatefulWidget {
-  const QuestionScreen({super.key});
+  const QuestionScreen({super.key, required this.onSelectAnswer});
+  final void Function(String answer) onSelectAnswer;
 
   @override
   State<QuestionScreen> createState() => _QuestionScreenState();
@@ -13,28 +15,13 @@ class QuestionScreen extends StatefulWidget {
 class _QuestionScreenState extends State<QuestionScreen> {
   var currentQuestionIndex = 0;
   var activeScreen = 'question-screen';
-  List<String> clickedAnswer = []; // Store clicked answers if needed
 
   void answerQuestion(String answeredText) {
     setState(() {
-      clickedAnswer.add(answeredText); // Add the clicked answer to the list
+      widget.onSelectAnswer(
+        answeredText,
+      ); // Call the callback with the selected answer
       currentQuestionIndex++;
-
-      if (currentQuestionIndex >= questions.length) {
-        // All questions answered, navigate to comparison screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AnswerComparisonScreen(
-              userAnswer: clickedAnswer.last, // Example: last answer
-              correctAnswer:
-                  questions.last.answers[0], // Example: correct answer
-            ),
-          ),
-        );
-      }
-      // If all questions are answered, switch to the answer screen
-      print(clickedAnswer);
     });
   }
 
@@ -45,26 +32,36 @@ class _QuestionScreenState extends State<QuestionScreen> {
       return Container();
     }
     var currentQuestion = questions[currentQuestionIndex];
-    return Container(
-      margin: const EdgeInsets.all(40),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            currentQuestion.text,
-            style: const TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 30),
-          ...currentQuestion.getShuffledAnswers().map((answer) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              // Each answer is wrapped in a Container to provide margin
-              child: AnswerButton(answerText: answer, onTap: answerQuestion),
-            );
-          }),
-        ],
+    return SizedBox(
+      width: double.infinity,
+      child: Container(
+        margin: const EdgeInsets.all(40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              currentQuestion.text,
+              style: GoogleFonts.lato(
+                color: const Color.fromARGB(255, 201, 153, 251),
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 30),
+            ...currentQuestion.getShuffledAnswers().map((answer) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                // Each answer is wrapped in a Container to provide margin
+                child: AnswerButton(
+                  answerText: answer,
+                  onTap: () => answerQuestion(answer),
+                ),
+              );
+            }),
+          ],
+        ),
       ),
     );
   }

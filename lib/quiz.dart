@@ -35,6 +35,13 @@ class _QuizState extends State<Quiz> {
     }
   }
 
+  void restartQuiz() {
+    setState(() {
+      activeScreen = 'start-screen';
+      selectedAnswers = []; // Reset the selected answers
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget screenWidget = StartScreen(switchScreen);
@@ -43,7 +50,10 @@ class _QuizState extends State<Quiz> {
     }
 
     if (activeScreen == 'result-screen') {
-      screenWidget = ResultScreen(userAnswer: selectedAnswers);
+      screenWidget = ResultScreen(
+        chosenAnswers: selectedAnswers,
+        onRestart: restartQuiz,
+      );
     }
     return MaterialApp(
       title: 'Flutter Demo',
